@@ -4,6 +4,8 @@
 Convert photometry to Janskies.
 """
 
+import numpy as np
+
 
 def ab_to_microjy(ab_mag, err=None):
     """Convert AB magnitudes to µJy.
@@ -31,6 +33,32 @@ def ab_to_microjy(ab_mag, err=None):
         return mjy, mjy_err
     else:
         return mjy
+
+
+def microjy_to_ab(microjy, err=None):
+    """Convert µJy to AB mag.
+    
+    Parameters
+    ----------
+    microjy : array
+        Flux densites in µJy
+    err : array
+        Optional uncertainties, in µJy.
+    
+    Returns
+    -------
+    ab_mag : array
+        Magnitudes in the AB system.
+    ab_err : array
+        Uncertainties in AB magnitudes (optional), interpreted as 1-sigma
+        Gaussian errors.
+    """
+    ab_mag = -2.5 * np.log10(microjy) + 2.5 * (6. + 23. - 0.4 * 48.6)
+    if err is not None:
+        ab_err = 1.0857 / (microjy / err)
+        return ab_mag, ab_err
+    else:
+        return ab_mag
 
 
 def dn_to_microjy(dn, zp, err=None):
