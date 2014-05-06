@@ -9,6 +9,61 @@ See: Sirianni 2005.
 import numpy as np
 
 
+WFC3_ZP = {"STMAG": {'f110w': 28.4401,
+                    'f160w': 28.1875,
+                    'f275w': 22.6034,
+                    'f336w': 23.6044},
+    "VEGAMAG": {'f110w': 26.0628,
+                'f160w': 24.6949,
+                'f275w': 22.6322,
+                'f336w': 23.4836},
+    "ABMAG": {'f110w': 26.8223,
+              'f160w': 25.9463,
+              'f275w': 24.1305,
+              'f336w': 24.6682},
+    "OBMAG": {'f110w': 0.,
+              'f160w': 0.,
+              'f275w': 0.,
+              'f336w': 0.}}
+
+ACS_ZP = {"STMAG": {'f475w': 25.757,
+                    'f606w': 26.655,
+                    'f814w': 26.776},
+    "VEGAMAG": {'f475w': 26.168,
+                'f606w': 26.398,
+                'f814w': 25.501},
+    "ABMAG": {'f475w': 25.673,
+              'f606w': 26.486,
+              'f814w': 25.937},
+    "OBMAG": {'f475w': 0.,
+              'f606w': 0.,
+              'f814w': 0.}}
+
+
+def transform_acs_zp(mags, band, zp_in, zp_out):
+    """Convert HST photometry from one ZP system to another.
+    
+    Uses values from Sirianni 2005 Table 10."""
+    zp_systems = ('ABMAG', "STMAG", "VEGAMAG", 'OBMAG')
+    assert band in ('f475w', 'f606w', 'f814w')
+    assert zp_in in zp_systems
+    assert zp_out in zp_systems
+    return mags - ACS_ZP[zp_in][band] + ACS_ZP[zp_out][band]
+
+
+def transform_wfc3_zp(mags, band, zp_in, zp_out):
+    """Convert WFC3 photometry from one ZP system to another.
+    
+    Uses values from the WFC3 instrument handbook
+    (http://www.stsci.edu/hst/wfc3/phot_zp_lbn).
+    """
+    zp_systems = ('ABMAG', "STMAG", "VEGAMAG", "OBMAG")
+    assert band in ('f110w', 'f160w', 'f275w', 'f336w')
+    assert zp_in in zp_systems
+    assert zp_out in zp_systems
+    return mags - WFC3_ZP[zp_in][band] + WFC3_ZP[zp_out][band]
+
+
 def ACS_606_814_to_VRI(m606_input, e606, m814_input, e814, zp="STMAG"):
     """Uses the transformations presented by Sirianni 2005 Table 22.
     Transforms ACS magnitudes from either the STMAG or VEGAMAG systems as well
@@ -68,22 +123,8 @@ def ACS_606_814_to_VRI(m606_input, e606, m814_input, e814, zp="STMAG"):
     c1IRI = 0.002  # pm 0.003
     c1IRIe = 0.003
 
-    assert zp in ('STMAG', 'VEGAMAG', 'OBMAG')
-    if zp == 'STMAG':
-        # Subtract the STMAG zeropoints to get OBMAG (Sirianni 2005 Table 11)
-        m606 = m606_input - 26.655
-        m814 = m814_input - 26.776
-    elif zp == 'VEGAMAG':
-        # Subtract the VEGAMAG zeropoints to get OBMAG (Sirianni 2005 Table 11)
-        m606 = m606_input - 26.398
-        m814 = m814_input - 25.501
-    elif zp == 'ABMAG':
-        # Subtract the VEGAMAG zeropoints to get OBMAG (Sirianni 2005 Table 11)
-        m606 = m606_input - 26.486
-        m814 = m814_input - 25.937
-    elif zp == 'OBMAG':
-        m606 = m606_input
-        m814 = m814_input
+    m606 = transform_acs_zp(m606_input, 'f606w', zp, 'OBMAG')
+    m814 = transform_acs_zp(m814_input, 'f814w', zp, 'OBMAG')
 
     V = (c0VVI * (c1IVI + 1) - (c0IVI + m814) * c1VVI + (c1IVI + 1) * m606) \
             / (c1IVI - c1VVI + 1)
@@ -134,22 +175,8 @@ def ACS_606_814_to_VRI(m606_input, e606, m814_input, e814, zp="STMAG"):
 
 def ACS_475_814_to_BVRI(m475_input, e475, m814_input, e814, zp="STMAG"):
     """Transform F475W, F814W to BVRI."""
-    assert zp in ('STMAG', 'VEGAMAG', 'OBMAG', 'ABMAG')
-    if zp == 'STMAG':
-        # Subtract the STMAG zeropoints to get OBMAG (Sirianni 2005 Table 11)
-        m475 = m475_input - 25.757
-        m814 = m814_input - 26.776
-    elif zp == 'VEGAMAG':
-        # Subtract the VEGAMAG zeropoints to get OBMAG (Sirianni 2005 Table 11)
-        m475 = m475_input - 26.168
-        m814 = m814_input - 25.501
-    elif zp == 'ABMAG':
-        # Subtract the VEGAMAG zeropoints to get OBMAG (Sirianni 2005 Table 11)
-        m475 = m475_input - 26.068
-        m814 = m814_input - 25.937
-    elif zp == 'OBMAG':
-        m475 = m475_input
-        m814 = m814_input
+    m475 = transform_acs_zp(m475_input, 'f475w', zp, 'OBMAG')
+    m814 = transform_acs_zp(m814_input, 'f814w', zp, 'OBMAG')
 
     c0BBV = 26.146
     c0BBVe = 0.002
