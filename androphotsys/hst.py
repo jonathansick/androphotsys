@@ -64,6 +64,63 @@ def transform_wfc3_zp(mags, band, zp_in, zp_out):
     return mags - WFC3_ZP[zp_in][band] + WFC3_ZP[zp_out][band]
 
 
+def WFC3_275_336_to_u(m275_input, e275, m336_input, e336, zp="VEGAMAG"):
+    """Convert WFC3 photometry to u-band using the FSPS modelling
+    in scripts/model_wfc3_u.py
+    """
+    m275 = transform_wfc3_zp(m275_input, 'f275w', zp, 'ABMAG')
+    m336 = transform_wfc3_zp(m336_input, 'f336w', zp, 'ABMAG')
+    x = [-0.08689923, -0.35246386, 0.14181587]
+    C = m275 - m336
+    return m336 + x[0] + x[1] * C + x[2] * C ** 2
+
+
+def WFC3_110_160_to_JK(m110_input, e110, m160_input, e160, zp="VEGAMAG"):
+    """Convert WFC3 photometry to JK-band using the FSPS modelling in
+    scripts/model_wfc3_wircam.py
+    """
+    m110 = transform_wfc3_zp(m110_input, 'f110w', zp, 'ABMAG')
+    m160 = transform_wfc3_zp(m160_input, 'f160w', zp, 'ABMAG')
+    jx = [0.00547237, 0.66899301, -0.04243658]
+    kx = [0.31956416, -0.79017206, -0.50508958]
+    C = m110 - m160
+    J = m160 + jx[0] + jx[1] * C + jx[2] * C ** 2
+    K = m160 + kx[0] + kx[1] * C + kx[2] * C ** 2
+    return J, K
+
+
+def ACS_475_814_to_gri(m475_input, e475, m814_input, e814, zp="VEGAMAG"):
+    """Convert PHAT ACS photometry to gri-band using the FSPS modelling in
+    scripts/model_phat_acs_gri.py
+    """
+    m475 = transform_acs_zp(m475_input, 'f475w', zp, 'ABMAG')
+    m814 = transform_acs_zp(m814_input, 'f814w', zp, 'ABMAG')
+    gx = [9.57764778e-05, -1.02124096e+00, 7.88096678e-03]
+    rx = [0.01202004, 0.63585405, -0.07292224]
+    ix = [-1.54686861e-09, 1.00000000e+00, 1.14909796e-09]
+    C = m475 - m814
+    g = m475 + gx[0] + gx[1] * C + gx[2] * C ** 2
+    r = m814 + rx[0] + rx[1] * C + rx[2] * C ** 2
+    i = m814 + ix[0] + ix[1] * C + ix[2] * C ** 2
+    return g, r, i
+
+
+def ACS_606_814_to_gri(m606_input, e606, m814_input, e814, zp="STMAG"):
+    """Convert Brown+ ACS photometry to gri-band using the FSPS modelling in
+    scripts/model_acs_brown_gri.py
+    """
+    m606 = transform_acs_zp(m606_input, 'f606w', zp, 'ABMAG')
+    m814 = transform_acs_zp(m814_input, 'f814w', zp, 'ABMAG')
+    gx = [-0.0326888, 1.89707009, 1.61923982]
+    rx = [-1.27046946e-09, 1.00000000e+00, 2.09291043e-08]
+    ix = [-3.53574932e-11, -6.57288045e-10, -1.37800530e-09]
+    C = m606 - m814
+    g = m606 + gx[0] + gx[1] * C + gx[2] * C ** 2
+    r = m814 + rx[0] + rx[1] * C + rx[2] * C ** 2
+    i = m814 + ix[0] + ix[1] * C + ix[2] * C ** 2
+    return g, r, i
+
+
 def ACS_606_814_to_VRI(m606_input, e606, m814_input, e814, zp="STMAG"):
     """Uses the transformations presented by Sirianni 2005 Table 22.
     Transforms ACS magnitudes from either the STMAG or VEGAMAG systems as well
