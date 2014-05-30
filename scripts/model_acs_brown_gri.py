@@ -23,8 +23,8 @@ def main():
     g = data[:, 0]
     r = data[:, 1]
     i = data[:, 2]
-    F606W = data[:, 1]
-    F814W = data[:, 2]
+    F606W = data[:, 3]
+    F814W = data[:, 4]
 
     g_result = scipy.optimize.leastsq(cfunc_g,
             [0., 0.1, 0.1], args=(g, F606W, F814W))
