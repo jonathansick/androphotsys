@@ -4,8 +4,11 @@
 Model the photometric transformation between F110W-F160W and JKs.
 """
 
+import os
 import numpy as np
 import scipy.optimize
+
+from astropy.table import Table
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -25,16 +28,35 @@ def main():
     F110W = data[:, 2]
     F160W = data[:, 3]
 
-    j_result = scipy.optimize.leastsq(cfunc_J,
-            [0., 0.1, 0.1], args=(J, F110W, F160W))
-    k_result = scipy.optimize.leastsq(cfunc_K,
-            [0., 0.1, 0.1], args=(K, F110W, F160W))
+    j_result = scipy.optimize.leastsq(
+        cfunc_J,
+        [0., 0.1, 0.1], args=(J, F110W, F160W))
+    k_result = scipy.optimize.leastsq(
+        cfunc_K,
+        [0., 0.1, 0.1], args=(K, F110W, F160W))
     print "J coefficients", j_result[0]
     print "Ks coefficients", k_result[0]
 
+    colnames = ['TMAG', 'SMAG', 'COL', 'x0', 'x1', 'x2']
+    tmags = ['J', 'Ks']
+    smags = ['F160W', 'F160w']
+    colors = ['F110W-F160W', 'F110W-F160W']
+    x0 = [j_result[0][0], k_result[0][0]]
+    x1 = [j_result[0][1], k_result[0][1]]
+    x2 = [j_result[0][2], k_result[0][2]]
+    tbl = Table([tmags, smags, colors, x0, x1, x2], names=colnames)
+    data_dir = os.path.join("androphotsys/data/")
+    name = "wfc3_wircam.txt"
+    if os.path.exists(data_dir):
+        path = os.path.join(data_dir, name)
+    else:
+        path = name
+    tbl.write(path, format='ascii.commented_header')
+
     fig = Figure(figsize=(4, 7))
     canvas = FigureCanvas(fig)
-    gs = gridspec.GridSpec(3, 1, left=0.2, right=0.95, bottom=0.15, top=0.95,
+    gs = gridspec.GridSpec(
+        3, 1, left=0.2, right=0.95, bottom=0.15, top=0.95,
         wspace=None, hspace=0.3, width_ratios=None, height_ratios=None)
     ax = fig.add_subplot(gs[0], aspect='equal')
     axJ = fig.add_subplot(gs[1])
@@ -45,14 +67,16 @@ def main():
     ax.set_ylabel("F110W-F160W")
 
     jc = j_result[0]
-    axJ.scatter(J - K, cfunc_J(jc, J, F110W, F160W),
-            s=2, edgecolors='None', facecolors='k')
+    axJ.scatter(
+        J - K, cfunc_J(jc, J, F110W, F160W),
+        s=2, edgecolors='None', facecolors='k')
     axJ.set_xlabel(r"$J-K_s$")
     axJ.set_ylabel(r"$\Delta_J$")
 
     kc = k_result[0]
-    axK.scatter(J - K, cfunc_K(kc, K, F110W, F160W),
-            s=2, edgecolors='None', facecolors='k')
+    axK.scatter(
+        J - K, cfunc_K(kc, K, F110W, F160W),
+        s=2, edgecolors='None', facecolors='k')
     axK.set_xlabel(r"$J - K_s$")
     axK.set_ylabel(r"$\Delta_{K_s}$")
 

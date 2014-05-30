@@ -4,8 +4,11 @@
 Model the photometric transformation between F475W-F814W and gri.
 """
 
+import os
 import numpy as np
 import scipy.optimize
+
+from astropy.table import Table
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -26,39 +29,62 @@ def main():
     F475W = data[:, 3]
     F814W = data[:, 4]
 
-    g_result = scipy.optimize.leastsq(cfunc_g,
-            [0., 0.1, 0.1], args=(g, F475W, F814W))
-    r_result = scipy.optimize.leastsq(cfunc_r,
-            [0., 0.1, 0.1], args=(r, F475W, F814W))
-    i_result = scipy.optimize.leastsq(cfunc_i,
-            [0., 0.1, 0.1], args=(i, F475W, F814W))
+    g_result = scipy.optimize.leastsq(
+        cfunc_g,
+        [0., 0.1, 0.1], args=(g, F475W, F814W))
+    r_result = scipy.optimize.leastsq(
+        cfunc_r,
+        [0., 0.1, 0.1], args=(r, F475W, F814W))
+    i_result = scipy.optimize.leastsq(
+        cfunc_i,
+        [0., 0.1, 0.1], args=(i, F475W, F814W))
     print "g coefficients", g_result[0]
     print "r coefficients", r_result[0]
     print "i coefficients", i_result[0]
 
+    colnames = ['TMAG', 'SMAG', 'COL', 'x0', 'x1', 'x2']
+    tmags = ['g', 'r', 'i']
+    smags = ['F475W', 'F814W', 'F814w']
+    colors = ['F475W-F814W', 'F475W-F814W', 'F475W-F814W']
+    x0 = [g_result[0][0], r_result[0][0], i_result[0][0]]
+    x1 = [g_result[0][1], r_result[0][1], i_result[0][1]]
+    x2 = [g_result[0][2], r_result[0][2], i_result[0][2]]
+    tbl = Table([tmags, smags, colors, x0, x1, x2], names=colnames)
+    data_dir = os.path.join("androphotsys/data/")
+    name = "phat_acs.txt"
+    if os.path.exists(data_dir):
+        path = os.path.join(data_dir, name)
+    else:
+        path = name
+    tbl.write(path, format='ascii.commented_header')
+
     fig = Figure(figsize=(4, 7))
     canvas = FigureCanvas(fig)
-    gs = gridspec.GridSpec(3, 1, left=0.2, right=0.95, bottom=0.15, top=0.95,
+    gs = gridspec.GridSpec(
+        3, 1, left=0.2, right=0.95, bottom=0.15, top=0.95,
         wspace=None, hspace=0.3, width_ratios=None, height_ratios=None)
     axg = fig.add_subplot(gs[0])
     axr = fig.add_subplot(gs[1])
     axi = fig.add_subplot(gs[2])
 
     gc = g_result[0]
-    axg.scatter(g, cfunc_g(gc, g, F475W, F814W),
-            s=2, edgecolors='None', facecolors='k')
+    axg.scatter(
+        g, cfunc_g(gc, g, F475W, F814W),
+        s=2, edgecolors='None', facecolors='k')
     axg.set_xlabel(r"$g$")
     axg.set_ylabel(r"$\Delta_g$")
 
     rc = r_result[0]
-    axr.scatter(r, cfunc_r(rc, r, F475W, F814W),
-            s=2, edgecolors='None', facecolors='k')
+    axr.scatter(
+        r, cfunc_r(rc, r, F475W, F814W),
+        s=2, edgecolors='None', facecolors='k')
     axr.set_xlabel(r"$r$")
     axr.set_ylabel(r"$\Delta_r$")
 
     ic = i_result[0]
-    axi.scatter(i, cfunc_i(ic, i, F475W, F814W),
-            s=2, edgecolors='None', facecolors='k')
+    axi.scatter(
+        i, cfunc_i(ic, i, F475W, F814W),
+        s=2, edgecolors='None', facecolors='k')
     axi.set_xlabel(r"$r$")
     axi.set_ylabel(r"$\Delta_i$")
 
