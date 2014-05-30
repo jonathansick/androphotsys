@@ -95,9 +95,10 @@ def ACS_475_814_to_gri(m475_input, e475, m814_input, e814, zp="VEGAMAG"):
     """
     m475 = transform_acs_zp(m475_input, 'f475w', zp, 'ABMAG')
     m814 = transform_acs_zp(m814_input, 'f814w', zp, 'ABMAG')
-    gx = [9.57764778e-05, -1.02124096e+00, 7.88096678e-03]
-    rx = [0.01202004, 0.63585405, -0.07292224]
-    ix = [-1.54686861e-09, 1.00000000e+00, 1.14909796e-09]
+    gx = [0.00011405, 0.01957309, 0.00617221]
+    rx = [0.01195939, 0.4330676, -0.07053753]
+    ix = [0.00137411, 0.10460093, -0.01623761]
+
     C = m475 - m814
     g = m475 + gx[0] + gx[1] * C + gx[2] * C ** 2
     r = m814 + rx[0] + rx[1] * C + rx[2] * C ** 2
@@ -487,4 +488,4 @@ def ACS_475_814_to_BVRI(m475_input, e475, m814_input, e814, zp="STMAG"):
         (c1IRI - c1IVI)*c2BBR + c1IRI)*c1BBV) ** 2 + (((c1IRI - c1IVI)*c2BBR -
         c1IRI)*c1BBV + c1IVI*c2BBR) ** 2*e814 ** 2/((c1IRI + 1)*c1IVI*c2BBR -
         (c1IRI*c1IVI - (c1IRI - c1IVI)*c2BBR + c1IRI)*c1BBV) ** 2)
-    return V, Be, V, Ve, R, Re, I, Ie
+
