@@ -44,7 +44,7 @@ def main():
 
     colnames = ['TMAG', 'SMAG', 'COL', 'x0', 'x1', 'x2']
     tmags = ['g', 'r', 'i']
-    smags = ['F475W', 'F814W', 'F814w']
+    smags = ['F475W', 'F814W', 'F814W']
     colors = ['F475W-F814W', 'F475W-F814W', 'F475W-F814W']
     x0 = [g_result[0][0], r_result[0][0], i_result[0][0]]
     x1 = [g_result[0][1], r_result[0][1], i_result[0][1]]

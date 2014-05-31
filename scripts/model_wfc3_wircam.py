@@ -39,7 +39,7 @@ def main():
 
     colnames = ['TMAG', 'SMAG', 'COL', 'x0', 'x1', 'x2']
     tmags = ['J', 'Ks']
-    smags = ['F160W', 'F160w']
+    smags = ['F160W', 'F160W']
     colors = ['F110W-F160W', 'F110W-F160W']
     x0 = [j_result[0][0], k_result[0][0]]
     x1 = [j_result[0][1], k_result[0][1]]
