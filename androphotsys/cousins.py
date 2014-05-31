@@ -1,11 +1,56 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-Photometric transformations between johnson cousins and other magnitude
-systems.
+Photometric transformations between Johnson Cousins and SDSS magnitudes
 """
 
 import numpy as np
+
+
+def FIG96_UBVRc_to_ugr(U, B, V,
+                       Ue=None, Be=None, Ve=None):
+    """
+    Conversions to Johnson-Cousins VEGAMAG magnitudes to SDSS ABMAG.
+
+    Fukugita, M., Ichikawa, T., Gunn, J. E. et al
+    1996AJ....111.1748F
+    """
+    g = V + 0.56 * (B - V) - 0.12
+    r = V - 0.49 * (B - V) + 0.11
+    # Alt: r = V - 0.84 * (V - R) + 0.13
+    ug = 1.38 * (U - B) + 1.14
+    u = ug + g
+    return u, g, r
+
+
+def KBT05_UBVRc_to_ugr(U, B, V,
+                       Ue=None, Be=None, Ve=None):
+    """Karaali, Bilir & Tunçel (2005)
+
+    **Not implemented**
+
+    These transformations appeared in Karaali, Bilir & Tunçel (2005).
+    They are based on Landolt (1992) UBV data for 224 stars in the color
+    range 0.3 < B-V < 1.1 with SDSS ugr photometry from the CASU INT Wide
+    Field Survey. An improvement over previous SDSS - UBVRcIc transformations
+    is the use of two colors in each equation, which is particularly helpful
+    for the u-g transformation.
+
+    UBVRcIc -> ugriz
+
+    Stars with  0.3 < B-V < 1.1
+        u-g    =    0.779*(U-B) + 0.755*(B-V)  + 0.801
+        g-r    =    1.023*(B-V) + 0.016*(U-B)  - 0.187
+
+    I *think* that that input magnitudes are meant to be in Vega mag, while
+    output magnitudes are meant to be AB.
+    
+    See:
+    http://www.sdss3.org/dr10/algorithms/sdssUBVRITransform.php#Bilir2005
+    """
+    ug = 0.779 * (U - B) + 0.755 * (B - V) + 0.801
+    gr = 1.023 * (B - V) + 0.016 * (U - B) - 0.187
+    return None
 
 
 def VRI_to_gri(V, Ve, R, Re, I, Ie):
