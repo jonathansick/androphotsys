@@ -5,10 +5,10 @@ Helpers for FSPS filters.
 """
 
 
-ANDROIDS_TO_FSPS = {'u': 'sdss_u',
-                    'g': 'sdss_g',
-                    'r': 'sdss_r',
-                    'i': 'sdss_i',
+ANDROIDS_TO_FSPS = {'u': 'megacam_u',
+                    'g': 'megacam_g',
+                    'r': 'megacam_r',
+                    'i': 'megacam_i',
                     'J': '2mass_J',
                     'Ks': '2mass_Ks',
                     '36': 'irac_1',
