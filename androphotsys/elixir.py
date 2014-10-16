@@ -49,19 +49,19 @@ def sdss_to_megacam(u=None, g=None, r=None, i=None):
     http://www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/megapipe/docs/filt.html
     """
     if u is not None and g is not None:
-        u_mega = u - 0.241 (u - g)
+        u_mega = u - 0.241 * (u - g)
     else:
         u_mega = None
 
     if g is not None and r is not None:
-        g_mega = g - 0.153 (g - r)
-        r_mega = r - 0.024 (g - r)
+        g_mega = g - 0.153 * (g - r)
+        r_mega = r - 0.024 * (g - r)
     else:
         g_mega = None
         r_mega = None
 
     if r is not None and i is not None:
-        i_mega = i - 0.003 (r - i)  # (new filter)
+        i_mega = i - 0.003 * (r - i)  # (new filter)
     else:
         i_mega = None
 
