@@ -26,16 +26,23 @@ FILTER_LATEX = {"megacam_u": r'$u^*$',
                 "megacam_g": r'$g^\prime$',
                 "megacam_r": r'$r^\prime$',
                 "megacam_i": r'$i^\prime$',
+                "sdss_u": r'$u$',
+                "sdss_g": r'$g$',
+                "sdss_r": r'$r$',
+                "sdss_i": r'$i$',
+                "sdss_z": r'$z$',
                 "2mass_J": r'$J$',
                 "2mass_Ks": r'$K_s$',
                 "irac_1": r'$[3.6]$',
                 "irac_2": r'$[4.5]$',
                 "irac_3": r'$[5.8]$',
                 "irac_4": r'$[8.0]$',
+                "f275w": r'F275W',
+                "f336w": r'F336W',
                 "f475w": r'F475W',
                 "f814w": r'F814W',
-                "f110w": r'110W',
-                "f160w": r'160W'}
+                "f110w": r'F110W',
+                "f160w": r'F160W'}
 
 
 def fsps_name_to_androids(fsps_filter_name):
