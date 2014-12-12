@@ -42,7 +42,9 @@ FILTER_LATEX = {"megacam_u": r'$u^*$',
                 "f475w": r'F475W',
                 "f814w": r'F814W',
                 "f110w": r'F110W',
-                "f160w": r'F160W'}
+                "f160w": r'F160W',
+                "galex_nuv": r'GALEX NUV',
+                "galex_fuv": r'GALEX FUV'}
 
 
 def fsps_name_to_androids(fsps_filter_name):
