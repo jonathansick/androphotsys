@@ -18,7 +18,12 @@ ANDROIDS_TO_FSPS = {'u': 'megacam_u',
                     'f475w': 'wfc_acs_f475w',
                     'f814w': 'wfc_acs_f814w',
                     'f110w': 'wfc3_ir_f110w',
-                    'f160w': 'wfc3_ir_f160w'}
+                    'f160w': 'wfc3_ir_f160w',
+                    'PACS_100': 'pacs_100',
+                    'PACS_160': 'pacs_160',
+                    'SPIRE_250': 'spire_250',
+                    'SPIRE_350': 'spire_350',
+                    'SPIRE_500': 'spire_500'}
 FSPS_TO_ANDROIDS = {v: k for k, v in ANDROIDS_TO_FSPS.iteritems()}
 
 
@@ -44,7 +49,12 @@ FILTER_LATEX = {"megacam_u": r'$u^*$',
                 "f110w": r'F110W',
                 "f160w": r'F160W',
                 "galex_nuv": r'GALEX NUV',
-                "galex_fuv": r'GALEX FUV'}
+                "galex_fuv": r'GALEX FUV',
+                'PACS_100': r'$[100]$',
+                'PACS_160': r'$[160]$',
+                'SPIRE_250': r'$[250]$',
+                'SPIRE_350': r'$[350]$',
+                'SPIRE_500': r'$[500]$'}
 
 
 def fsps_name_to_androids(fsps_filter_name):
