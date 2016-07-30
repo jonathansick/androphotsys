@@ -50,11 +50,11 @@ FILTER_LATEX = {"megacam_u": r'$u^*$',
                 "f160w": r'F160W',
                 "galex_nuv": r'GALEX NUV',
                 "galex_fuv": r'GALEX FUV',
-                'PACS_100': r'$[100]$',
-                'PACS_160': r'$[160]$',
-                'SPIRE_250': r'$[250]$',
-                'SPIRE_350': r'$[350]$',
-                'SPIRE_500': r'$[500]$'}
+                'pacs_100': r'$[100]$',
+                'pacs_160': r'$[160]$',
+                'spire_250': r'$[250]$',
+                'spire_350': r'$[350]$',
+                'spire_500': r'$[500]$'}
 
 
 def fsps_name_to_androids(fsps_filter_name):
